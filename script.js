@@ -48,9 +48,25 @@ function addBookToLibrary(book) {
   myLibrary.push(book);
 }
 
+function removeBook(index){
+    myLibrary.splice(index, 1);
+    displayBooks();
+}
+
 function displayBooks(){
     const libraryTable = document.getElementById('library-table');
-    myLibrary.forEach(book => {
+
+    libraryTable.innerHTML = `
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Genre</th>
+            <th>Published Year</th>
+        </tr>
+    `
+
+    myLibrary.forEach((book,index) => {
         const bookData = document.createElement('tr');
 
         bookData.innerHTML = `
@@ -59,6 +75,7 @@ function displayBooks(){
         <td>${book.isbn}</td>
         <td>${book.genre}</td>
         <td>${book.publishedYear}</td>
+        <button onclick="removeBook(${index})">Remove</button>
         `;
 
         libraryTable.appendChild(bookData);
@@ -66,3 +83,38 @@ function displayBooks(){
 }
 
 displayBooks();
+
+const addBookButton = document.getElementById('add-book');
+const bookModal = document.getElementById('book-modal');
+const modalOverlay = document.getElementById('modal-overlay');
+const closeModalButton = document.getElementById('close-modal');
+const bookForm = document.getElementById('book-form');
+
+addBookButton.addEventListener('click', () => {
+    bookModal.classList.add('show');
+    modalOverlay.classList.add('show');
+});
+
+closeModalButton.addEventListener('click', () => {
+    bookModal.classList.remove('show');
+    modalOverlay.classList.remove('show');
+});
+
+bookForm.addEventListener('submit', (e) =>{
+    e.preventDefault();
+
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const isbn = document.getElementById('isbn').value;
+    const genre = document.getElementById('genre').value;
+    const publishedYear = document.getElementById('publishedYear').value;
+
+    const newBook = new Book(title, author, isbn, genre, publishedYear);
+    addBookToLibrary(newBook);
+
+    displayBooks();
+
+    bookForm.reset();
+    bookModal.classList.remove('show');
+    modalOverlay.classList.remove('show');
+})
