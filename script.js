@@ -1,48 +1,23 @@
 const myLibrary = [
-    {
-        title: "To Kill a Mockingbird",
-        author: "Harper Lee",
-        isbn: "9780061120084",
-        genre: "Fiction",
-        publishedYear: 1960
-    },
-    {
-        title: "1984",
-        author: "George Orwell",
-        isbn: "9780451524935",
-        genre: "Dystopian",
-        publishedYear: 1949
-    },
-    {
-        title: "The Great Gatsby",
-        author: "F. Scott Fitzgerald",
-        isbn: "9780743273565",
-        genre: "Fiction",
-        publishedYear: 1925
-    },
-    {
-        title: "The Catcher in the Rye",
-        author: "J.D. Salinger",
-        isbn: "9780316769488",
-        genre: "Fiction",
-        publishedYear: 1951
-    },
-    {
-        title: "Pride and Prejudice",
-        author: "Jane Austen",
-        isbn: "9781503290563",
-        genre: "Romance",
-        publishedYear: 1813
-    }
+    new Book("To Kill a Mockingbird", "Harper Lee", "9780061120084", "Fiction", 1960, false),
+    new Book("1984", "George Orwell", "9780451524935", "Dystopian", 1949, false),
+    new Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", "Fiction", 1925, false),
+    new Book("The Catcher in the Rye", "J.D. Salinger", "9780316769488", "Fiction", 1951, false),
+    new Book("Pride and Prejudice", "Jane Austen", "9781503290563", "Romance", 1813, false)
 ];
 
-function Book(title,author,isbn,genre,publishedYear) {
+function Book(title,author,isbn,genre,publishedYear,read = false) {
     this.title = title;
     this.author = author;
     this.isbn = isbn;
     this.genre = genre;
     this.publishedYear = publishedYear;
+    this.read = read;
 }
+
+Book.prototype.toggleReadStatus = function () {
+    this.read = !this.read;
+};
 
 function addBookToLibrary(book) {
   myLibrary.push(book);
@@ -50,6 +25,11 @@ function addBookToLibrary(book) {
 
 function removeBook(index){
     myLibrary.splice(index, 1);
+    displayBooks();
+}
+
+function toggleRead(index) {
+    myLibrary[index].toggleReadStatus();
     displayBooks();
 }
 
@@ -63,6 +43,7 @@ function displayBooks(){
             <th>ISBN</th>
             <th>Genre</th>
             <th>Published Year</th>
+            <th>Actions</th>
         </tr>
     `
 
@@ -75,7 +56,12 @@ function displayBooks(){
         <td>${book.isbn}</td>
         <td>${book.genre}</td>
         <td>${book.publishedYear}</td>
-        <button onclick="removeBook(${index})">Remove</button>
+        <td>
+            <button onclick="removeBook(${index})">Remove</button>
+            <button onclick="toggleRead(${index})">
+                ${book.read ? 'Mark as Unread' : 'Mark as Read'}
+            </button>
+        </td>
         `;
 
         libraryTable.appendChild(bookData);
